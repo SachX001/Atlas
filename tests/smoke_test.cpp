@@ -3,6 +3,7 @@
 #include "../common/url.h"
 #include "../common/document.h"
 #include "../common/crawl_state.h"
+#include "../common/config.h"
 
 TEST(AtlasUrlTest, ParsesBasicUrl) {
     atlas::Url url;
@@ -52,4 +53,21 @@ TEST(CrawlStateTest, HasExpectedStates) {
 
     state = atlas::CrawlState::Failed;
     EXPECT_EQ(state, atlas::CrawlState::Failed);
+}
+
+TEST(ConfigTest, StoresConfiguration) {
+    atlas::Config config;
+
+    config.seed_urls = {"https://example.com", "https://example.org"};
+    config.max_pages = 500;
+    config.request_timeout_seconds = 20;
+    config.crawl_delay_ms = 250;
+
+    ASSERT_EQ(config.seed_urls.size(), 2);
+    EXPECT_EQ(config.seed_urls[0], "https://example.com");
+    EXPECT_EQ(config.seed_urls[1], "https://example.org");
+
+    EXPECT_EQ(config.max_pages, 500);
+    EXPECT_EQ(config.request_timeout_seconds, 20);
+    EXPECT_EQ(config.crawl_delay_ms, 250);
 }
