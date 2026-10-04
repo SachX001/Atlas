@@ -2,6 +2,7 @@
 
 #include "../common/url.h"
 #include "../common/document.h"
+#include "../common/crawl_state.h"
 
 TEST(AtlasUrlTest, ParsesBasicUrl) {
     atlas::Url url;
@@ -33,4 +34,22 @@ TEST(DocumentTest, StoresDocumentData) {
     EXPECT_EQ(document.text, "This is an example page.");
     ASSERT_EQ(document.links.size(), 1);
     EXPECT_EQ(document.links[0].raw, "https://example.com/about");
+}
+
+TEST(CrawlStateTest, HasExpectedStates) {
+    atlas::CrawlState state = atlas::CrawlState::Discovered;
+
+    EXPECT_EQ(state, atlas::CrawlState::Discovered);
+
+    state = atlas::CrawlState::Queued;
+    EXPECT_EQ(state, atlas::CrawlState::Queued);
+
+    state = atlas::CrawlState::Fetching;
+    EXPECT_EQ(state, atlas::CrawlState::Fetching);
+
+    state = atlas::CrawlState::Fetched;
+    EXPECT_EQ(state, atlas::CrawlState::Fetched);
+
+    state = atlas::CrawlState::Failed;
+    EXPECT_EQ(state, atlas::CrawlState::Failed);
 }
