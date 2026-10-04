@@ -5,5 +5,12 @@
 #include "config.h"
 
 namespace atlas{
-    bool parse_arguements(int argc, char* argv[], Config& config);
+    struct ParseResult {
+        bool success;
+        Config config;
+        std::string error_message;
+    };
+
+    ParseResult parse_arguements(int argc, char* argv[]);
+
 }

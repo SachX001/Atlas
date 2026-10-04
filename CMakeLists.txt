@@ -31,6 +31,8 @@ set(CMAKE_CXX_EXTENSION OFF)
 
 add_executable(atlas-crawler
     apps/crawler_main.cpp
+    common/cli.cpp
+    common/log.cpp
 )
 
 add_executable(atlas-indexer

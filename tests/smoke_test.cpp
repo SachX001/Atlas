@@ -1,4 +1,6 @@
 #include <gtest/gtest.h>
+#include <string>
+#include <iostream>
 
 #include "../common/url.h"
 #include "../common/document.h"
@@ -84,13 +86,14 @@ TEST(CliTest, ParsesValidArguments) {
         "--delay-ms", "250"
     };
 
-    atlas::Config config;
+    auto result = atlas::parse_arguements(
+    static_cast<int>(std::size(argv)),
+    const_cast<char**>(argv)
+    );
 
-    ASSERT_TRUE(atlas::parse_arguements(
-        static_cast<int>(std::size(argv)),
-        const_cast<char**>(argv),
-        config
-    ));
+    ASSERT_TRUE(result.success);
+
+    const auto& config = result.config;
 
     ASSERT_EQ(config.seed_urls.size(), 2);
     EXPECT_EQ(config.seed_urls[0], "https://example.com");
@@ -99,6 +102,70 @@ TEST(CliTest, ParsesValidArguments) {
     EXPECT_EQ(config.max_pages, 500);
     EXPECT_EQ(config.request_timeout_seconds, 20);
     EXPECT_EQ(config.crawl_delay_ms, 250);
+}
+
+TEST(CliTest, RejectsMissingSeed) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--max-pages", "100"
+    };
+
+    auto result = atlas::parse_arguements(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+   EXPECT_EQ(
+        result.error_message,
+        "at least one --seed URL is required."
+    );
+}
+
+TEST(CliTest, RejectsMissingMaxPages) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com"
+    };
+
+    auto result = atlas::parse_arguements(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(result.error_message.find("--max-pages"), std::string::npos);
+}
+
+TEST(CliTest, RejectsInvalidMaxPages) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com",
+        "--max-pages", "0"
+    };
+
+    auto result = atlas::parse_arguements(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(result.error_message.find("greater than 0"), std::string::npos);
+}
+
+TEST(CliTest, RejectsUnknownOption) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--something"
+    };
+
+    auto result = atlas::parse_arguements(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(result.error_message.find("unknown option"), std::string::npos);
 }
 
 TEST(LogTest, CanLogMessage) {
