@@ -5,6 +5,7 @@
 #include "../common/crawl_state.h"
 #include "../common/config.h"
 #include "../common/cli.h"
+#include "../common/log.h"
 
 TEST(AtlasUrlTest, ParsesBasicUrl) {
     atlas::Url url;
@@ -98,4 +99,10 @@ TEST(CliTest, ParsesValidArguments) {
     EXPECT_EQ(config.max_pages, 500);
     EXPECT_EQ(config.request_timeout_seconds, 20);
     EXPECT_EQ(config.crawl_delay_ms, 250);
+}
+
+TEST(LogTest, CanLogMessage) {
+    atlas::log_info("info message");
+    atlas::log_warn("warning message");
+    atlas::log_error("error message");
 }

@@ -45,6 +45,7 @@ add_executable(atlas-tests
     	tests/smoke_test.cpp
 	common/url.cpp
 	common/cli.cpp
+	common/log.cpp
 )
 
 target_link_libraries(atlas-tests
