@@ -44,6 +44,7 @@ add_executable(atlas-search
 add_executable(atlas-tests
     	tests/smoke_test.cpp
 	common/url.cpp
+	common/cli.cpp
 )
 
 target_link_libraries(atlas-tests

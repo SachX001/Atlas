@@ -9,6 +9,6 @@ namespace atlas{
 
         int max_pages = 100;
         int request_timeout_seconds = 10;
-        int crawl_delay_ms = 100;
+        int crawl_delay_ms = 250;
     };
 }
