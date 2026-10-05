@@ -11,6 +11,6 @@ namespace atlas{
         std::string error_message;
     };
 
-    ParseResult parse_arguements(int argc, char* argv[]);
+    ParseResult parse_arguments(int argc, char* argv[]);
 
 }

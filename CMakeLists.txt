@@ -27,7 +27,7 @@ FetchContent_MakeAvailable(Boost)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_EXTENSION OFF)
+set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(atlas-crawler
     apps/crawler_main.cpp

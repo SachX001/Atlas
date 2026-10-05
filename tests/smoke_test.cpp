@@ -86,7 +86,7 @@ TEST(CliTest, ParsesValidArguments) {
         "--delay-ms", "250"
     };
 
-    auto result = atlas::parse_arguements(
+    auto result = atlas::parse_arguments(
     static_cast<int>(std::size(argv)),
     const_cast<char**>(argv)
     );
@@ -110,7 +110,7 @@ TEST(CliTest, RejectsMissingSeed) {
         "--max-pages", "100"
     };
 
-    auto result = atlas::parse_arguements(
+    auto result = atlas::parse_arguments(
         static_cast<int>(std::size(argv)),
         const_cast<char**>(argv)
     );
@@ -128,7 +128,7 @@ TEST(CliTest, RejectsMissingMaxPages) {
         "--seed", "https://example.com"
     };
 
-    auto result = atlas::parse_arguements(
+    auto result = atlas::parse_arguments(
         static_cast<int>(std::size(argv)),
         const_cast<char**>(argv)
     );
@@ -144,7 +144,7 @@ TEST(CliTest, RejectsInvalidMaxPages) {
         "--max-pages", "0"
     };
 
-    auto result = atlas::parse_arguements(
+    auto result = atlas::parse_arguments(
         static_cast<int>(std::size(argv)),
         const_cast<char**>(argv)
     );
@@ -153,13 +153,145 @@ TEST(CliTest, RejectsInvalidMaxPages) {
     EXPECT_NE(result.error_message.find("greater than 0"), std::string::npos);
 }
 
+TEST(CliTest, RejectsInvalidTimeout) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com",
+        "--max-pages", "100",
+        "--timeout", "0"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(
+        result.error_message.find("--timeout"),
+        std::string::npos
+    );
+}
+
+TEST(CliTest, RejectsNegativeDelay) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com",
+        "--max-pages", "100",
+        "--delay-ms", "-1"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(
+        result.error_message.find("--delay-ms"),
+        std::string::npos
+    );
+}
+
+TEST(CliTest, RejectsMissingSeedValue) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--max-pages", "100",
+        "--seed"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(
+        result.error_message.find("--seed"),
+        std::string::npos
+    );
+}
+
+TEST(CliTest, RejectsMissingMaxPagesValue) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com",
+        "--max-pages"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(
+        result.error_message.find("--max-pages"),
+        std::string::npos
+    );
+}
+
+TEST(CliTest, RejectsMissingTimeoutValue) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com",
+        "--max-pages", "100",
+        "--timeout"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(
+        result.error_message.find("--timeout"),
+        std::string::npos
+    );
+}
+
+TEST(CliTest, RejectsMissingDelayValue) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--seed", "https://example.com",
+        "--max-pages", "100",
+        "--delay-ms"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_FALSE(result.success);
+    EXPECT_NE(
+        result.error_message.find("--delay-ms"),
+        std::string::npos
+    );
+}
+
+TEST(CliTest, AcceptsHelp) {
+    const char* argv[] = {
+        "atlas-crawler",
+        "--help"
+    };
+
+    auto result = atlas::parse_arguments(
+        static_cast<int>(std::size(argv)),
+        const_cast<char**>(argv)
+    );
+
+    EXPECT_TRUE(result.success);
+}
+
 TEST(CliTest, RejectsUnknownOption) {
     const char* argv[] = {
         "atlas-crawler",
         "--something"
     };
 
-    auto result = atlas::parse_arguements(
+    auto result = atlas::parse_arguments(
         static_cast<int>(std::size(argv)),
         const_cast<char**>(argv)
     );
