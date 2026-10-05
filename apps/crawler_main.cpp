@@ -6,7 +6,7 @@
 
 int main(int argc, char* argv[]) {
     try{
-        auto result = atlas::parse_arguements(argc,argv);
+        auto result = atlas::parse_arguments(argc,argv);
 
         if(!result.success) {
             atlas::log_error(result.error_message);
